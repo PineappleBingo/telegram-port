@@ -24,7 +24,7 @@
 - 입력 대기 5분(`INPUT_TTL_MS = 300_000`), 새 `/명령`은 대기를 취소.
 - 소유자(`ownerChatId`)가 아닌 채팅은 무응답(기록만).
 - 사용자 메시지에 오류 내용·스택을 넣지 않는다. `core.failed`에는 오류 코드만.
-- 기본 비밀값 패턴(설정 편집 금지): `*token*`, `*secret*`, `*password*`, `*apikey*`, `*api_key*`, `apikeys.*`, `*privatekey*` (대소문자 무시) + 매니페스트 `settings.excluded`.
+- 기본 비밀값 패턴(설정 편집 금지): `*token*`, `*secret*`, `*password*`, `*key*`, `*mnemonic*`, `*seed*`, `*passphrase*`, `*credential*`, `*pass`, `*pwd*` (대소문자 무시; 최종 리뷰에서 설계서의 `*key*`로 복원·확대) + 매니페스트 `settings.excluded`.
 - 예약 메뉴 id: `settings`(매니페스트에 `settings`가 있을 때), `status`(매니페스트에 `status`가 있을 때). 직접 정의 금지.
 - 텔레그램 메시지 4,096자 초과는 줄바꿈 기준으로 나눠 보낸다. 429는 `retry_after`초 대기 후 최대 3회. "message is not modified"는 무시.
 - 코드 주석은 영어로 "왜"만. 커밋 메시지는 명령형 한 줄 + `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` + `Claude-Session: https://claude.ai/code/session_01WNMUpPWUbcqbQUoyESaLV8`.
