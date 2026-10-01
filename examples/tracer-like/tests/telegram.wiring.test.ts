@@ -21,7 +21,8 @@ describe('telegram wiring', () => {
   });
 
   it('finds every setting path in the config', () => {
-    for (const f of raw.settings?.fields ?? []) expect(configAdapter.get(f.path), f.path).not.toBeUndefined();
+    const paths: string[] = (raw.settings?.fields ?? []).map((f: { path: string }) => f.path);
+    expect(paths.filter((p) => configAdapter.get(p) === undefined)).toEqual([]);
   });
 
   it('answers every reachable button without a failure', async () => {

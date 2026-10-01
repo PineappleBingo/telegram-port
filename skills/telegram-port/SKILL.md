@@ -43,15 +43,23 @@ as choices. When they approve, write `src/telegram/telegram.manifest.json`.
 
 ### 3. Install
 
-1. Run `install`. It copies the engine (`core/`), writes `manifest.gen.ts`, the messages file,
-   `handlers.ts`, `configAdapter.ts`, `index.ts` and `tests/telegram.wiring.test.ts`, and reports
-   what it wrote and what it kept.
-2. Add the dependencies the engine needs: `grammy` and `zod` (use the project's package manager).
-3. Add `TELEGRAM_BOT_TOKEN=` and the owner variable from the manifest (default `TELEGRAM_CHAT_ID=`)
-   to `.env.example`. Never write real values.
-4. Find where the app starts. Show the user a diff that adds `await startBot();` (imported from
-   `src/telegram/index.js`) there, and apply it only after they approve.
-5. Replace the key-only texts in `messages.<lang>.ts` with real ones in the manifest's language,
+1. Check how the project tests. The wiring test needs vitest or jest, in a folder the project's
+   tsconfig and test runner both include. Pass `--tests <folder>` when that is not `tests`, and
+   `--dir` if the bot should not live in `src/telegram`. The tool picks the runner (jest when only
+   jest is installed, else vitest) and the module style (ES modules or CommonJS) from `package.json`
+   and `tsconfig.json`; override with `--runner` or `--module` when it guesses wrong. With no test
+   runner at all, ask the user before adding vitest.
+2. Run `install`. It copies the engine (`core/`), writes `manifest.gen.ts`, the messages file,
+   `handlers.ts`, `configAdapter.ts`, `index.ts` and the wiring test, and reports what it wrote and
+   what it kept. It refuses an existing `core/` folder it did not install: never delete that folder
+   to get past it; ask the user where the bot should go instead.
+3. Add the dependencies the engine needs: `grammy` and `zod` (use the project's package manager).
+4. Add `TELEGRAM_BOT_TOKEN=` and the owner variable from the manifest (default `TELEGRAM_CHAT_ID=`)
+   to `.env.example`. Never write real values. Add `.telegram-port/` to `.gitignore`.
+5. Find where the app starts. Show the user a diff that adds `await startBot();` there (or
+   `void startBot();` when the start code is not async), imported from `src/telegram/index.js`,
+   and apply it only after they approve.
+6. Replace the key-only texts in `messages.<lang>.ts` with real ones in the manifest's language,
    keeping the file JSON-shaped.
 
 ### 4. Wire and verify
@@ -90,7 +98,7 @@ Follow `references/wiring.md`.
 
 | Command | Does |
 |---|---|
-| `install` | engine + project layer, never overwriting; `--force-core` replaces a same-version engine |
+| `install` | engine + project layer, never overwriting; `--tests`, `--dir`, `--runner vitest\|jest`, `--module esm\|cjs`; `--force-core` replaces a same-version engine (never a newer one) |
 | `gen` | rewrites `manifest.gen.ts` from the JSON (after any manifest edit) |
 | `preview` | writes `.telegram-port/preview.html` (`--out` to change) |
 

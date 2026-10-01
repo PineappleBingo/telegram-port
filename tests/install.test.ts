@@ -55,6 +55,47 @@ describe('installProject', () => {
     expect(r.core.core).toBe('current');
   });
 
+  it('refuses a core folder it did not install, writing nothing', () => {
+    const root = project();
+    mkdirSync(join(root, 'src/telegram/core'), { recursive: true });
+    writeFileSync(join(root, 'src/telegram/core/mybot.ts'), '// the project own bot\n');
+    expect(() => installProject({ root })).toThrow(/core.*not installed by telegram-port/);
+    expect(read(root, 'src/telegram/core/mybot.ts')).toBe('// the project own bot\n');
+    expect(existsSync(join(root, 'src/telegram/handlers.ts'))).toBe(false);
+  });
+
+  it('writes relative imports even when the tests folder contains the telegram folder', () => {
+    const root = project();
+    installProject({ root, tests: '.' });
+    expect(read(root, 'telegram.wiring.test.ts')).toContain("from './src/telegram/core/index.js'");
+  });
+
+  it('reads the manifest in the wiring test the way the module system allows', () => {
+    const esm = project();
+    writeFileSync(join(esm, 'package.json'), '{"type":"module"}');
+    installProject({ root: esm });
+    expect(read(esm, 'tests/telegram.wiring.test.ts')).toContain('import.meta.url');
+    const cjs = project();
+    writeFileSync(join(cjs, 'package.json'), '{}');
+    writeFileSync(join(cjs, 'tsconfig.json'), '{ "compilerOptions": { "module": "commonjs" } }');
+    installProject({ root: cjs });
+    expect(read(cjs, 'tests/telegram.wiring.test.ts')).toContain('__dirname');
+    expect(read(cjs, 'tests/telegram.wiring.test.ts')).not.toContain('import.meta');
+  });
+
+  it('uses the jest globals when the project runs jest', () => {
+    const root = project();
+    writeFileSync(join(root, 'package.json'), '{"type":"module","devDependencies":{"jest":"^29.0.0"}}');
+    installProject({ root });
+    expect(read(root, 'tests/telegram.wiring.test.ts')).toContain("from '@jest/globals'");
+  });
+
+  it('refuses a language that is not a language tag', () => {
+    const root = project({ ...sampleManifest, language: 'x/../../escaped' });
+    expect(() => installProject({ root })).toThrow(/language/);
+    expect(existsSync(join(root, 'src/telegram/core'))).toBe(false);
+  });
+
   it('refuses to run before the manifest exists', () => {
     expect(() => installProject({ root: project(null) })).toThrow(/telegram\.manifest\.json/);
   });
@@ -77,6 +118,14 @@ describe('installCore', () => {
     expect(installCore(join(root, 'src/telegram'))).toEqual({ core: 'upgraded', from: '0.0.1', to: PLUGIN_VERSION });
     expect(existsSync(join(root, 'src/telegram/core/gone.ts'))).toBe(false);
     expect(read(root, 'src/telegram/core/VERSION').trim()).toBe(PLUGIN_VERSION);
+  });
+
+  it('will not downgrade a newer engine even when forced', () => {
+    const root = project();
+    mkdirSync(join(root, 'src/telegram/core'), { recursive: true });
+    writeFileSync(join(root, 'src/telegram/core/VERSION'), '9.0.0\n');
+    expect(installCore(join(root, 'src/telegram'), { force: true }).core).toBe('newer');
+    expect(read(root, 'src/telegram/core/VERSION').trim()).toBe('9.0.0');
   });
 
   it('replaces a same-version engine only when forced', () => {

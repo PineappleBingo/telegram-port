@@ -59,6 +59,25 @@ describe('port.mjs', () => {
     expect(r.stderr).toContain('telegram.manifest.json');
   });
 
+  it('keeps every path it writes inside the target', () => {
+    const root = nodeProject();
+    for (const flag of ['--dir', '--tests', '--out']) {
+      const r = run('install', '--target', root, flag, '../outside');
+      expect(r.status, flag).toBe(1);
+      expect(r.stderr, flag).toContain('inside the target');
+    }
+  });
+
+  it('reports a refusal as a message, not a stack trace', () => {
+    const root = nodeProject();
+    mkdirSync(join(root, 'src/telegram/core'));
+    writeFileSync(join(root, 'src/telegram/core/mine.ts'), '');
+    const r = run('install', '--target', root);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toContain('not installed by telegram-port');
+    expect(r.stderr).not.toContain('    at ');
+  });
+
   it('explains its usage for an unknown command', () => {
     const r = run('deploy', '--target', nodeProject());
     expect(r.status).toBe(1);

@@ -39,7 +39,8 @@ commas) so the preview can read it. Use `{name}` placeholders for alert variable
 ## index.ts and the start line
 
 `index.ts` exports `startBot(log?, onAudit?)`, `sendAlert(id, vars)` and `stopBot()`. Add
-`await startBot();` where the app starts (after config is loaded), shown to the user as a diff first.
+`await startBot();` where the app starts (after config is loaded; `void startBot();` in start code
+that is not async), shown to the user as a diff first.
 Pass the app's logger if it has one. Call `sendAlert('site.down', { url })` where the event happens;
 it never throws and returns false when the bot is off.
 
