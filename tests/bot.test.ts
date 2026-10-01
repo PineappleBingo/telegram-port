@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { deliver, isNotModified, retryAfterSeconds, startTelegram, type BotLike, type TelegramApiLike } from '../core/bot.js';
+import { deliver, isNotModified, retryAfterSeconds, startTelegram, type BotLike, type TelegramApiLike } from '../skills/telegram-port/core/bot.js';
 import { sampleManifest, sampleMessages } from './fixtures.js';
 
 const api = (): TelegramApiLike & { sendMessage: ReturnType<typeof vi.fn>; editMessageText: ReturnType<typeof vi.fn> } => ({

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { guardDecision, phraseMatches } from '../core/guard.js';
+import { guardDecision, phraseMatches } from '../skills/telegram-port/core/guard.js';
 
 describe('guardDecision', () => {
   it('runs read, confirms write, gates danger', () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CORE_MESSAGES } from '../core/messages.core.js';
-import { errorCode, makeT, splitMessage } from '../core/text.js';
+import { CORE_MESSAGES } from '../skills/telegram-port/core/messages.core.js';
+import { errorCode, makeT, splitMessage } from '../skills/telegram-port/core/text.js';
 
 describe('makeT', () => {
   const t = makeT({ 'hello': '안녕 {name}', 'core.done': '끝' }, { 'core.done': '완료', 'core.back': '뒤로' });

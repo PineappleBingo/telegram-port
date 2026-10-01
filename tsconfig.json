@@ -12,5 +12,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["core/**/*.ts", "tests/**/*.ts"]
+  "include": ["skills/telegram-port/core/**/*.ts", "tests/**/*.ts"]
 }

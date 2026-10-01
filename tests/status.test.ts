@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { renderStatus } from '../core/status.js';
-import { makeT } from '../core/text.js';
+import { renderStatus } from '../skills/telegram-port/core/status.js';
+import { makeT } from '../skills/telegram-port/core/text.js';
 
 const t = makeT({ 'status.a': '가', 'status.b': '나', 'status.c': '다' }, {});
 

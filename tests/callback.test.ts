@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CallbackCodec, MAX_CALLBACK_BYTES, MAX_HASHED } from '../core/callback.js';
+import { CallbackCodec, MAX_CALLBACK_BYTES, MAX_HASHED } from '../skills/telegram-port/core/callback.js';
 
 describe('CallbackCodec', () => {
   it('round-trips a stable id, with and without an argument containing colons', () => {

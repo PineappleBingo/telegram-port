@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { CallbackCodec } from '../core/callback.js';
-import { validateManifest } from '../core/manifest.js';
-import { CORE_MESSAGES } from '../core/messages.core.js';
-import { PendingInputs } from '../core/pending.js';
-import { SettingsUi, type ConfigAdapter, type Outgoing } from '../core/settings.js';
-import { makeT } from '../core/text.js';
+import { CallbackCodec } from '../skills/telegram-port/core/callback.js';
+import { validateManifest } from '../skills/telegram-port/core/manifest.js';
+import { CORE_MESSAGES } from '../skills/telegram-port/core/messages.core.js';
+import { PendingInputs } from '../skills/telegram-port/core/pending.js';
+import { SettingsUi, type ConfigAdapter, type Outgoing } from '../skills/telegram-port/core/settings.js';
+import { makeT } from '../skills/telegram-port/core/text.js';
 import { sampleManifest, sampleMessages } from './fixtures.js';
 
 function setup(values: Record<string, unknown> = { 'jobs.enabled': true, 'jobs.level': 'low', 'jobs.share': 0.1, 'jobs.limit': 5 }) {

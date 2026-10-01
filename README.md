@@ -1,8 +1,8 @@
 # telegram-port
 
-Port a Telegram bot into any Node/TypeScript project. A manifest describes the menus, commands, settings, alerts and status screen; the engine in `core/` draws them and calls the project's own functions.
+Port a Telegram bot into any Node/TypeScript project. A manifest describes the menus, commands, settings, alerts and status screen; the engine in `skills/telegram-port/core/` draws them and calls the project's own functions.
 
-This repository is being built in two steps. Step 1 (this state) is the engine in `core/`. Step 2 adds the `/telegram-port` skill that writes the manifest and the wiring for a project.
+This repository is being built in two steps. Step 1 (this state) is the engine in `skills/telegram-port/core/`. Step 2 adds the `/telegram-port` skill that writes the manifest and the wiring for a project.
 
 ## Engine at a glance
 

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Alerts } from '../core/alerts.js';
-import { validateManifest } from '../core/manifest.js';
-import { CORE_MESSAGES } from '../core/messages.core.js';
-import { makeT } from '../core/text.js';
+import { Alerts } from '../skills/telegram-port/core/alerts.js';
+import { validateManifest } from '../skills/telegram-port/core/manifest.js';
+import { CORE_MESSAGES } from '../skills/telegram-port/core/messages.core.js';
+import { makeT } from '../skills/telegram-port/core/text.js';
 import { sampleManifest, sampleMessages } from './fixtures.js';
 
 function setup(send = vi.fn(async (_text: string) => undefined)) {
