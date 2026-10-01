@@ -1,0 +1,22 @@
+{
+  "name": "telegram-port",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Port a Telegram bot into any Node/TypeScript project: menus, settings, alerts and status wired to the project's own functions.",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "grammy": "^1.36.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
