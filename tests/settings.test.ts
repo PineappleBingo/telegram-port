@@ -68,6 +68,15 @@ describe('SettingsUi', () => {
     expect((await ui.onInput(1, 'jobs.limit', '2.5'))[0]!.text).toContain('1–50');
   });
 
+  it('answers with the error code when reading the config fails', async () => {
+    const { ui, config } = setup();
+    config.get = () => {
+      throw new Error('config unreadable');
+    };
+    expect(await ui.onCallback(1, 'c.gen', undefined)).toEqual([{ text: 'FAILED' }]);
+    expect(await ui.onInput(1, 'jobs.limit', '3')).toEqual([{ text: 'FAILED' }]);
+  });
+
   it('reports a failed save without throwing', async () => {
     const { ui, press, config } = setup();
     vi.mocked(config.set).mockImplementation(() => {

@@ -35,6 +35,21 @@ describe('deliver', () => {
     expect(a.sendMessage).toHaveBeenCalledWith(1, 'more', undefined);
   });
 
+  it('sends a new message when the tapped one can no longer be edited', async () => {
+    const a = api();
+    a.editMessageText.mockRejectedValueOnce(tgError(400, 'Bad Request: message to edit not found'));
+    await deliver(a, 1, [{ text: 'menu' }], { editMessageId: 9 });
+    expect(a.sendMessage).toHaveBeenCalledWith(1, 'menu', undefined);
+  });
+
+  it('does not hold the update queue for a long 429 wait', async () => {
+    const a = api();
+    const sleep = vi.fn(async () => undefined);
+    a.sendMessage.mockRejectedValueOnce(tgError(429, 'Too Many Requests', 30));
+    await expect(deliver(a, 1, [{ text: 'hi' }], { sleep })).rejects.toThrow('Too Many Requests');
+    expect(sleep).not.toHaveBeenCalled();
+  });
+
   it('waits out a 429 and gives up after three tries', async () => {
     const a = api();
     const sleep = vi.fn(async () => undefined);

@@ -12,7 +12,8 @@ const ActionSchema = z.object({
   risk: z.enum(['read', 'write', 'danger']),
   command: z.string().regex(/^[a-z0-9_]{1,32}$/).optional(),
   arg: ArgSchema.optional(),
-  confirmPhrase: z.string().min(1).optional(),
+  // Trimmed because the typed answer is: a padded phrase could never match.
+  confirmPhrase: z.string().trim().min(1).optional(),
 });
 
 const MenuItemSchema = z.union([

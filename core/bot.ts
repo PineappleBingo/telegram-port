@@ -44,7 +44,10 @@ export function isNotModified(err: unknown): boolean {
   return /message is not modified/i.test(asTgError(err).description ?? '');
 }
 
-const realSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+/** Longest 429 wait worth sitting through; past this the reply is dropped and logged. */
+export const MAX_RETRY_WAIT_S = 5;
+
+const realSleep =(ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 async function withRetry(fn: () => Promise<unknown>, sleep: (ms: number) => Promise<void>): Promise<void> {
   for (let attempt = 1; ; attempt++) {
@@ -55,7 +58,8 @@ async function withRetry(fn: () => Promise<unknown>, sleep: (ms: number) => Prom
       // Re-sending the same menu text is not an error worth surfacing.
       if (isNotModified(err)) return;
       const wait = retryAfterSeconds(err);
-      if (wait === null || attempt >= 3) throw err;
+      // grammY handles updates in order, so a long wait here would hold every later tap, Cancel included.
+      if (wait === null || wait > MAX_RETRY_WAIT_S || attempt >= 3) throw err;
       await sleep(wait * 1000);
     }
   }
@@ -80,7 +84,12 @@ export async function deliver(
       const extra = j === parts.length - 1 ? markup(out) : undefined;
       if (i === 0 && parts.length === 1 && opts.editMessageId !== undefined) {
         const messageId = opts.editMessageId;
-        await withRetry(() => api.editMessageText(chatId, messageId, part, extra), sleep);
+        try {
+          await withRetry(() => api.editMessageText(chatId, messageId, part, extra), sleep);
+        } catch {
+          // The tapped message is gone or too old to edit: say it in a new one instead of not at all.
+          await withRetry(() => api.sendMessage(chatId, part, extra), sleep);
+        }
       } else {
         await withRetry(() => api.sendMessage(chatId, part, extra), sleep);
       }

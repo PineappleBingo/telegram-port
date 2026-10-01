@@ -22,6 +22,12 @@ describe('validateManifest', () => {
     expect(m.alerts[0]?.mutable).toBe(true);
   });
 
+  it('trims a confirm phrase so it can be typed', () => {
+    const raw = clone();
+    raw.actions[4].confirmPhrase = ' PURGE ';
+    expect(validateManifest(raw, msgs).actions[4]?.confirmPhrase).toBe('PURGE');
+  });
+
   it('rejects a shape error with its path', () => {
     const raw = clone();
     raw.actions[0].risk = 'maybe';

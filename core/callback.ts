@@ -11,6 +11,8 @@ export type DecodeResult = { ok: true; value: Decoded } | { ok: false; reason: '
 
 /** Telegram's limit on callback_data. */
 export const MAX_CALLBACK_BYTES = 64;
+/** Hashed buttons kept in memory; typed setting values each add one, so the oldest go first. */
+export const MAX_HASHED = 1000;
 
 /**
  * Buttons carry the item's id, never its position, so reordering a menu cannot
@@ -27,7 +29,10 @@ export class CallbackCodec {
     const raw = `${this.rev}|${kind}:${id}${arg === undefined ? '' : `:${arg}`}`;
     if (Buffer.byteLength(raw, 'utf8') <= MAX_CALLBACK_BYTES) return raw;
     const hash = createHash('sha1').update(raw).digest('base64url').slice(0, 16);
+    this.hashed.delete(hash);
     this.hashed.set(hash, { kind, id, arg });
+    // Map keeps insertion order, so the first key is the oldest.
+    if (this.hashed.size > MAX_HASHED) this.hashed.delete(this.hashed.keys().next().value as string);
     return `${this.rev}|h:${hash}`;
   }
 

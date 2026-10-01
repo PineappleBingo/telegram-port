@@ -169,6 +169,15 @@ describe('Engine.handle', () => {
     expect(s.calls).toEqual([['jobs.list', undefined]]);
   });
 
+  it('drops a pending input when the user taps into settings', async () => {
+    const s = setup();
+    const settings = await open(s, '⚙️ 설정');
+    await s.say('/add');
+    await s.tap(s.button(settings, '일반'));
+    expect((await s.say('5'))[0]!.text).toBe('메인');
+    expect(s.calls).toEqual([]);
+  });
+
   it('shows only an error code when a handler throws', async () => {
     const s = setup({ 'jobs.list': async () => { throw new Error('token=abc123 leaked'); } });
     const out = (await s.say('/jobs'))[0]!;

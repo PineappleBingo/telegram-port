@@ -44,7 +44,24 @@ export class SettingsUi {
     };
   }
 
+  /** Every screen reads the config; a config that fails to read gets the error code, not silence. */
   async onCallback(chatId: number, id: string, arg: string | undefined): Promise<Outgoing[]> {
+    return this.guarded(() => this.route(chatId, id, arg));
+  }
+
+  async onInput(chatId: number, fieldId: string, text: string): Promise<Outgoing[]> {
+    return this.guarded(() => this.input(chatId, fieldId, text));
+  }
+
+  private async guarded(fn: () => Promise<Outgoing[]>): Promise<Outgoing[]> {
+    try {
+      return await fn();
+    } catch (err) {
+      return [{ text: this.onError(err) }];
+    }
+  }
+
+  private async route(chatId: number, id: string, arg: string | undefined): Promise<Outgoing[]> {
     const dot = id.indexOf('.');
     const op = dot < 0 ? id : id.slice(0, dot);
     const target = dot < 0 ? '' : id.slice(dot + 1);
@@ -63,7 +80,7 @@ export class SettingsUi {
     return [this.home()];
   }
 
-  async onInput(chatId: number, fieldId: string, text: string): Promise<Outgoing[]> {
+  private async input(chatId: number, fieldId: string, text: string): Promise<Outgoing[]> {
     const field = this.fields.get(fieldId);
     if (!field) return [this.home()];
     const parsed = this.parse(field, text.trim().replace(/%$/, '').trim(), true);

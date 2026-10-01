@@ -189,7 +189,8 @@ export function createEngine(o: EngineOptions): Engine {
     const decoded = codec.decode(data);
     if (!decoded.ok) return stale();
     const { kind, id, arg } = decoded.value;
-    if (kind !== 's') pending.cancel(chatId);
+    // Any tap abandons a pending input; a settings "enter value" tap sets its own right after.
+    pending.cancel(chatId);
     if (kind === 'm') return renderMenu(id);
     if (kind === 'x') return [{ text: t('core.cancelled'), buttons: [backRow()] }];
     if (kind === 's') return settings ? settings.onCallback(chatId, id, arg) : stale();

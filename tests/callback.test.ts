@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CallbackCodec, MAX_CALLBACK_BYTES } from '../core/callback.js';
+import { CallbackCodec, MAX_CALLBACK_BYTES, MAX_HASHED } from '../core/callback.js';
 
 describe('CallbackCodec', () => {
   it('round-trips a stable id, with and without an argument containing colons', () => {
@@ -23,6 +23,14 @@ describe('CallbackCodec', () => {
     expect(fresh.decode(old.encode('a', 'jobs.list'))).toEqual({ ok: false, reason: 'stale' });
     const hashed = old.encode('a', 'id', 'y'.repeat(80));
     expect(new CallbackCodec(2).decode(hashed)).toEqual({ ok: false, reason: 'stale' });
+  });
+
+  it('keeps a bounded number of hashed buttons, forgetting the oldest', () => {
+    const c = new CallbackCodec(1);
+    const first = c.encode('s', 'y.f', `${'z'.repeat(70)}0`);
+    for (let i = 1; i <= MAX_HASHED; i++) c.encode('s', 'y.f', `${'z'.repeat(70)}${i}`);
+    expect(c.decode(first)).toEqual({ ok: false, reason: 'stale' });
+    expect(c.decode(c.encode('s', 'y.f', `${'z'.repeat(70)}${MAX_HASHED}`)).ok).toBe(true);
   });
 
   it('calls anything else unknown', () => {
