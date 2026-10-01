@@ -64,6 +64,18 @@ describe('startTelegram', () => {
     expect(log.warn).toHaveBeenCalledTimes(2);
   });
 
+  it('takes commands only from the owner person, and warns when the owner id is a group', async () => {
+    const { bot, a, on } = fakeBot(() => new Promise(() => undefined));
+    await startTelegram({ ...base, actions: handlers, token: 't', ownerChatId: 5, createBot: () => bot });
+    const onText = on.mock.calls.find((c) => c[0] === 'message:text')![1];
+    await onText({ chat: { id: 5 }, from: { id: 6 }, message: { text: '/start' } });
+    expect(a.sendMessage).not.toHaveBeenCalled();
+    const log = { warn: vi.fn(), error: vi.fn() };
+    const group = fakeBot(() => new Promise(() => undefined));
+    await startTelegram({ ...base, actions: handlers, token: 't', ownerChatId: -100123, log, createBot: () => group.bot });
+    expect(log.warn).toHaveBeenCalledWith(expect.anything(), expect.stringContaining('group'));
+  });
+
   it('stays off on an invalid manifest without throwing', async () => {
     const log = { warn: vi.fn(), error: vi.fn() };
     const { ['jobs.purge']: _p, ...missing } = handlers;
@@ -85,7 +97,7 @@ describe('startTelegram', () => {
     const { bot, a, on } = fakeBot(() => new Promise(() => undefined));
     const handle = await startTelegram({ ...base, actions: handlers, token: 't', ownerChatId: 5, createBot: () => bot });
     const onText = on.mock.calls.find((c) => c[0] === 'message:text')![1];
-    await onText({ chat: { id: 5 }, message: { text: '/start' } });
+    await onText({ chat: { id: 5 }, from: { id: 5 }, message: { text: '/start' } });
     expect(a.sendMessage.mock.calls[0]![1]).toBe('메인');
     expect(await handle!.alerts.send('job.done', { name: 'A' })).toBe(true);
     expect(a.sendMessage).toHaveBeenLastCalledWith(5, '작업 A 완료', undefined);

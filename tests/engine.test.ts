@@ -120,6 +120,27 @@ describe('Engine.handle', () => {
     expect(s.calls).toEqual([]);
   });
 
+  it('runs a write confirm once, with the argument it showed, and refuses a forged or expired one', async () => {
+    const s = setup();
+    const jobs = await open(s, '작업');
+    const yes = s.button((await s.tap(s.button(jobs, '모드 · fast')))[0], '실행');
+    await s.tap(yes);
+    await s.tap(yes);
+    expect(s.calls).toEqual([['jobs.mode', 'fast']]);
+    expect((await s.tap('3|c:jobs.mode:evil'))[0]!.text).toContain('메뉴가 바뀌었습니다');
+    const late = s.button((await s.tap(s.button(jobs, '모드 · off')))[0], '실행');
+    s.advance(5 * 60_000 + 1);
+    await s.tap(late);
+    expect(s.calls).toEqual([['jobs.mode', 'fast']]);
+  });
+
+  it('ignores a member of the owner chat who is not the owner', async () => {
+    const s = setup();
+    expect(await s.engine.handle({ chatId: OWNER, userId: 99, text: '/jobs' })).toEqual([]);
+    expect((await s.engine.handle({ chatId: OWNER, userId: OWNER, text: '/jobs' }))[0]!.text).toBe('jobs.list ok');
+    expect(s.calls).toEqual([['jobs.list', undefined]]);
+  });
+
   it('asks for a number argument, re-asks on junk, then confirms the write', async () => {
     const s = setup();
     expect((await s.say('/add'))[0]!.text).toBe('몇 개를 추가할까요?');

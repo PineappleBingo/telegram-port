@@ -1,10 +1,11 @@
+import { randomBytes } from 'node:crypto';
 import { CallbackCodec, type DecodeResult } from './callback.js';
 import { guardDecision, phraseMatches } from './guard.js';
 import {
   ManifestError, validateManifest, type ActionId, type ActionSpec, type Manifest, type ManifestLike, type StatusField,
 } from './manifest.js';
 import { CORE_MESSAGES } from './messages.core.js';
-import { PendingInputs } from './pending.js';
+import { INPUT_TTL_MS, PendingInputs } from './pending.js';
 import { SettingsUi, type Button, type ConfigAdapter, type Outgoing } from './settings.js';
 import { renderStatus, type StatusFn } from './status.js';
 import type { EngineLog } from './alerts.js';
@@ -14,6 +15,8 @@ export type { Button, ConfigAdapter, EngineLog, Outgoing, StatusFn };
 
 export interface Incoming {
   chatId: number;
+  /** The person who sent it; when given, it must be the owner (a group chat id would admit every member). */
+  userId?: number;
   text?: string;
   callback?: string;
 }
@@ -72,7 +75,9 @@ export function createEngine(o: EngineOptions): Engine {
   const log = o.log ?? silent;
   const now = o.now ?? Date.now;
   const codec = new CallbackCodec(m.manifestRev);
-  const pending = new PendingInputs(o.inputTtlMs, now);
+  const inputTtlMs = o.inputTtlMs ?? INPUT_TTL_MS;
+  const pending = new PendingInputs(inputTtlMs, now);
+  const confirms = new Map<number, { nonce: string; actionId: string; arg: string | undefined; at: number }>();
   const actions = new Map(m.actions.map((a) => [a.id, a]));
   const menus = new Map(m.menus.map((x) => [x.id, x]));
   const byCommand = new Map(m.actions.flatMap((a) => (a.command ? [[a.command, a] as const] : [])));
@@ -167,9 +172,13 @@ export function createEngine(o: EngineOptions): Engine {
     const decision = guardDecision(a);
     if (decision === 'run') return run(a, arg, chatId);
     if (decision === 'confirm') {
+      // The button carries a one-shot nonce, not the argument: a double tap, an old confirm
+      // or forged data cannot run the action again or with a value no menu offered.
+      const nonce = randomBytes(6).toString('base64url');
+      confirms.set(chatId, { nonce, actionId: a.id, arg, at: now() });
       return [{
         text: t('core.confirm.ask', { action: actionTitle(a, arg) }),
-        buttons: [[{ text: t('core.confirm.yes'), data: codec.encode('c', a.id, arg) }], cancelRow()],
+        buttons: [[{ text: t('core.confirm.yes'), data: codec.encode('c', a.id, nonce) }], cancelRow()],
       }];
     }
     pending.set(chatId, { kind: 'danger', actionId: a.id, arg });
@@ -187,7 +196,13 @@ export function createEngine(o: EngineOptions): Engine {
     const a = actions.get(id);
     if (!a) return stale();
     // A confirm button only ever runs a write action: danger needs the typed phrase, whatever the button says.
-    if (kind === 'c') return a.risk === 'write' ? run(a, arg, chatId) : stale();
+    if (kind === 'c') {
+      const c = confirms.get(chatId);
+      if (a.risk !== 'write' || !c || c.nonce !== arg || c.actionId !== a.id) return stale();
+      confirms.delete(chatId);
+      if (now() - c.at > inputTtlMs) return [{ text: t('core.input.expired'), buttons: [backRow()] }];
+      return run(a, c.arg, chatId);
+    }
     return start(a, arg, chatId);
   }
 
@@ -224,8 +239,8 @@ export function createEngine(o: EngineOptions): Engine {
     t,
     decode: (data) => codec.decode(data),
     async handle(input) {
-      if (input.chatId !== o.ownerChatId) {
-        log.warn({ chatId: input.chatId }, 'telegram: ignored a chat that is not the owner');
+      if ((input.userId ?? input.chatId) !== o.ownerChatId) {
+        log.warn({ chatId: input.chatId, userId: input.userId }, 'telegram: ignored someone who is not the owner');
         return [];
       }
       if (input.callback !== undefined) return onCallback(input.chatId, input.callback);

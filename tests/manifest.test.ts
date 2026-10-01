@@ -76,6 +76,14 @@ describe('validateManifest', () => {
     expect(p).toContain('setting w: path wallet.seed looks secret');
   });
 
+  it('refuses every common way of naming a secret', () => {
+    const paths = ['wallet.private_key', 'helius.key', 'birdeye.api-key', 'signer.keypair', 'wallet.mnemonic', 'wallet.seed', 'db.pass', 'auth.credentials', 'gpg.passphrase', 'ssh.pwd'];
+    const raw = clone();
+    paths.forEach((path, i) => raw.settings.fields.push({ id: `s${i}`, path, category: 'gen', label: 'set.limit', kind: 'int', apply: 'live' }));
+    const p = problemsOf(raw).join('\n');
+    for (const path of paths) expect(p).toContain(`path ${path} looks secret`);
+  });
+
   it('checks setting categories and enum options', () => {
     const raw = clone();
     raw.settings.fields[0].category = 'nope';

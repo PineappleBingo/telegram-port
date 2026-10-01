@@ -59,9 +59,13 @@ export type MenuSpec = Manifest['menus'][number];
 export type SettingsSpec = NonNullable<Manifest['settings']>;
 export type SettingField = SettingsSpec['fields'][number];
 
-/** Paths that must never become chat-editable, whatever a manifest says. */
+/**
+ * Paths that must never become chat-editable, whatever a manifest says. Broad on purpose:
+ * the editor prints current values, so a missed secret lands in Telegram history.
+ * A false positive ("monkey") only means the field is not offered in chat.
+ */
 export const DEFAULT_SECRET_PATTERNS: readonly string[] = [
-  '*token*', '*secret*', '*password*', '*apikey*', '*api_key*', 'apikeys.*', '*privatekey*',
+  '*token*', '*secret*', '*password*', '*key*', '*mnemonic*', '*seed*', '*passphrase*', '*credential*', '*pass', '*pwd*',
 ];
 /** Menus the engine draws itself; a manifest only links to them. */
 export const RESERVED_MENUS = ['settings', 'status'] as const;

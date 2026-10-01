@@ -14,6 +14,7 @@ export interface TelegramApiLike {
 
 interface TextCtx {
   chat: { id: number };
+  from?: { id: number };
   message: { text: string };
 }
 interface CallbackCtx {
@@ -120,6 +121,11 @@ export async function startTelegram(o: StartOptions): Promise<TelegramHandle | n
     return null;
   }
 
+  if (owner < 0) {
+    // Commands are checked against the sender, and no person has a group's id.
+    log.warn({ owner }, 'telegram: the owner id is a group; alerts go there but no one can run commands — use your own user id');
+  }
+
   let alerts: Alerts | undefined;
   let engine: Engine;
   try {
@@ -134,12 +140,14 @@ export async function startTelegram(o: StartOptions): Promise<TelegramHandle | n
   alerts = new Alerts({ manifest: engine.manifest, t: engine.t, log, send: (text) => deliver(bot.api, owner, [{ text }]) });
 
   bot.on('message:text', async (ctx) => {
-    await deliver(bot.api, ctx.chat.id, await engine.handle({ chatId: ctx.chat.id, text: ctx.message.text }));
+    // No sender (a channel post) counts as nobody: 0 never matches an owner.
+    const outs = await engine.handle({ chatId: ctx.chat.id, userId: ctx.from?.id ?? 0, text: ctx.message.text });
+    await deliver(bot.api, ctx.chat.id, outs);
   });
   bot.on('callback_query:data', async (ctx) => {
     await ctx.answerCallbackQuery().catch(() => undefined);
     const chatId = ctx.chat?.id ?? ctx.from.id;
-    const outs = await engine.handle({ chatId, callback: ctx.callbackQuery.data });
+    const outs = await engine.handle({ chatId, userId: ctx.from.id, callback: ctx.callbackQuery.data });
     await deliver(bot.api, chatId, outs, { editMessageId: ctx.callbackQuery.message?.message_id });
   });
   bot.catch((err) => log.error({ err: String(err) }, 'telegram update failed'));
