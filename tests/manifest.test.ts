@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CORE_MESSAGES } from '../core/messages.core.js';
-import { ManifestError, validateManifest } from '../core/manifest.js';
+import { CORE_MESSAGES } from '../skills/telegram-port/core/messages.core.js';
+import { ManifestError, validateManifest } from '../skills/telegram-port/core/manifest.js';
 import { sampleManifest, sampleMessages } from './fixtures.js';
 
 const msgs = { ...CORE_MESSAGES.ko, ...sampleMessages };

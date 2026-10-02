@@ -1,0 +1,10 @@
+{
+  "name": "telegram-port",
+  "version": "0.1.0",
+  "description": "Port a Telegram bot into any Node/TypeScript project: menus, commands, a settings editor, alerts and a status screen, wired to the project's own functions and checked by typecheck and a press-every-button simulator.",
+  "author": { "name": "PineappleBingo" },
+  "homepage": "https://github.com/PineappleBingo/telegram-port",
+  "repository": "https://github.com/PineappleBingo/telegram-port",
+  "license": "MIT",
+  "keywords": ["telegram", "bot", "grammy", "typescript", "skill"]
+}

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import * as core from '../core/index.js';
+import * as core from '../skills/telegram-port/core/index.js';
 
 describe('core/index', () => {
   it('exposes the pieces a project uses', () => {
@@ -10,6 +10,6 @@ describe('core/index', () => {
   });
 
   it('reports the version written in core/VERSION', () => {
-    expect(core.CORE_VERSION).toBe(readFileSync(new URL('../core/VERSION', import.meta.url), 'utf8').trim());
+    expect(core.CORE_VERSION).toBe(readFileSync(new URL('../skills/telegram-port/core/VERSION', import.meta.url), 'utf8').trim());
   });
 });

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "manifestRev": 1,
+  "language": "en",
+  "owner": { "env": "TELEGRAM_CHAT_ID" },
+  "menus": [
+    { "id": "main", "title": "main.title", "items": [{ "action": "sites.list" }, { "menu": "sites" }, { "menu": "settings" }, { "menu": "status" }] },
+    { "id": "sites", "title": "sites.title", "items": [
+      { "action": "sites.list" },
+      { "action": "checks.mode", "args": ["on", "off"] },
+      { "action": "sites.add" },
+      { "action": "sites.clear" }
+    ] }
+  ],
+  "actions": [
+    { "id": "sites.list", "label": "sites.list", "risk": "read", "command": "sites" },
+    { "id": "checks.mode", "label": "checks.mode", "risk": "write", "arg": { "kind": "enum" } },
+    { "id": "sites.add", "label": "sites.add", "risk": "write", "command": "add", "arg": { "kind": "text", "prompt": "sites.add.ask" } },
+    { "id": "sites.clear", "label": "sites.clear", "risk": "danger", "command": "clear", "confirmPhrase": "CLEAR" }
+  ],
+  "settings": {
+    "categories": [{ "id": "checks", "title": "settings.checks" }, { "id": "alerts", "title": "settings.alerts" }],
+    "fields": [
+      { "id": "checks.enabled", "path": "checks.enabled", "category": "checks", "label": "set.enabled", "kind": "boolean", "apply": "live" },
+      { "id": "checks.interval", "path": "checks.intervalSec", "category": "checks", "label": "set.interval", "kind": "int", "min": 10, "max": 3600, "apply": "restart" },
+      { "id": "checks.timeout", "path": "checks.timeoutMs", "category": "checks", "label": "set.timeout", "kind": "int", "min": 500, "max": 30000, "apply": "live" },
+      { "id": "alerts.recover", "path": "alerts.onRecover", "category": "alerts", "label": "set.recover", "kind": "boolean", "apply": "live" }
+    ],
+    "excluded": ["notify.*"]
+  },
+  "alerts": [
+    { "id": "site.down", "template": "alert.down", "mutable": false },
+    { "id": "site.up", "template": "alert.up", "mutable": true }
+  ],
+  "status": { "fields": ["sites.total", "sites.down"] }
+}

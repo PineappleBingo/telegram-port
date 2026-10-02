@@ -9,8 +9,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "allowJs": true,
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["core/**/*.ts", "tests/**/*.ts"]
+  "include": ["skills/telegram-port/core/**/*.ts", "tests/**/*.ts", "examples/**/*.ts"]
 }

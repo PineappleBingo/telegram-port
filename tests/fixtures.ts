@@ -1,4 +1,4 @@
-import type { Messages } from '../core/text.js';
+import type { Messages } from '../skills/telegram-port/core/text.js';
 
 export const sampleManifest = {
   version: 1,

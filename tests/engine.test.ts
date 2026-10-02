@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createEngine, type ActionHandler, type Outgoing } from '../core/engine.js';
-import { ManifestError } from '../core/manifest.js';
+import { createEngine, type ActionHandler, type Outgoing } from '../skills/telegram-port/core/engine.js';
+import { ManifestError } from '../skills/telegram-port/core/manifest.js';
 import { sampleManifest, sampleMessages } from './fixtures.js';
 
 const OWNER = 42;

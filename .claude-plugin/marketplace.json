@@ -1,0 +1,15 @@
+{
+  "name": "telegram-port",
+  "owner": {
+    "name": "PineappleBingo"
+  },
+  "description": "telegram-port: install a Telegram bot into a Node/TypeScript project, wired to its own functions.",
+  "plugins": [
+    {
+      "name": "telegram-port",
+      "source": "./",
+      "description": "Port a Telegram bot into any Node/TypeScript project, wired to the project's own functions.",
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { INPUT_TTL_MS, PendingInputs } from '../core/pending.js';
+import { INPUT_TTL_MS, PendingInputs } from '../skills/telegram-port/core/pending.js';
 
 describe('PendingInputs', () => {
   it('hands a pending input out once', () => {

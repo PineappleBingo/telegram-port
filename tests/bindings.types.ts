@@ -1,4 +1,4 @@
-import type { Bindings } from '../core/engine.js';
+import type { Bindings } from '../skills/telegram-port/core/engine.js';
 import { sampleManifest } from './fixtures.js';
 
 const ok = () => 'ok';

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createEngine, type ActionHandler } from '../core/engine.js';
-import { simulate } from '../core/testing/simulate.js';
+import { createEngine, type ActionHandler } from '../skills/telegram-port/core/engine.js';
+import { simulate } from '../skills/telegram-port/core/testing/simulate.js';
 import { sampleManifest, sampleMessages } from './fixtures.js';
 
 function engine(over: Record<string, ActionHandler> = {}) {
