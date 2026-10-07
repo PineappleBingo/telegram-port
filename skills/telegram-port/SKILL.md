@@ -39,7 +39,9 @@ every item's evidence (`file:line`) in `.telegram-port/extract.md`.
 
 Show the user, briefly: the menu tree, every `danger` action, the config paths left out as secrets,
 and the items you were unsure about. Ask only about the unsure ones, at most four questions at a time,
-as choices. When they approve, write `src/telegram/telegram.manifest.json`.
+as choices. When the project has a dashboard or many user-facing features, propose what to port
+with a decision report (`references/report-format.md`) instead, and continue from what the user
+saved there. When they approve, write `src/telegram/telegram.manifest.json`.
 
 ### 3. Install
 
@@ -112,3 +114,4 @@ templates in `templates/handlers.ts`, `templates/configAdapter.ts`, `templates/i
 - `references/manifest.md`: the manifest format and its rules
 - `references/wiring.md`: handlers, config adapter, messages, start line, re-run rules
 - `references/safety.md`: risk levels, secrets, what needs the user's yes
+- `references/report-format.md`: the decision report for choosing which dashboard features to port
