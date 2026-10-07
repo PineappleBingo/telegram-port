@@ -41,7 +41,9 @@ Show the user, briefly: the menu tree, every `danger` action, the config paths l
 and the items you were unsure about. Ask only about the unsure ones, at most four questions at a time,
 as choices. When the project has a dashboard or many user-facing features, propose what to port
 with a decision report (`references/report-format.md`) instead, and continue from what the user
-saved there. When they approve, write `src/telegram/telegram.manifest.json`.
+saved there, then run the report's **backport review** (new features, rules or UI the bot adds
+that the project's app lacks: add to the app, share the logic, or keep Telegram-only). When they
+approve, write `src/telegram/telegram.manifest.json`.
 
 ### 3. Install
 

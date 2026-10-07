@@ -49,7 +49,7 @@ Keep the three different in flow, not only in wording.
 
 ## Saved data
 
-The page declares the `db` capability and writes three collections. Field names are fixed so the
+The page declares the `db` capability and writes three collections (the backport review adds a fourth, `backport`). Field names are fixed so the
 reading side does not have to guess.
 
 | Collection / doc | Fields |
@@ -74,5 +74,30 @@ and ask the user to send their choices in the chat; the page must still render.
 2. Ask clarifying questions about the ideas (at most four, as choices).
 3. For ideas that become features, publish a follow-up report in the same format with three
    variants each.
-4. Turn the final picks into a plan: manifest changes (menus, actions, risk), handlers to wire.
-5. Show the manifest diff as in step 2, then implement from step 3.
+4. Run the **backport review** below before any code is written.
+5. Turn the final picks into a plan: manifest changes (menus, actions, risk), handlers to wire.
+6. Show the manifest diff as in step 2, then implement from step 3.
+
+## Backport review (always, before implementing)
+
+Porting a feature to Telegram often adds something the project's own app does not have yet. Left
+alone, the two screens drift apart. For every picked variant:
+
+1. Compare it with the project's existing UI (dashboard, CLI, web app) and record `있음 / 일부 / 없음`
+   with `file:line` evidence on both sides.
+2. List what the Telegram side introduces, in three kinds:
+   - **새 기능**: a capability the app lacks (e.g. a morning digest, undo for a toggle).
+   - **새 규칙·판정**: validation or decision logic (e.g. rejecting AI-sounding text, link
+     de-duplication). Logic written inside the bot layer is the main drift risk.
+   - **UI 변화**: a presentation idea the app could adopt (e.g. a progress card, a status chip).
+3. Ask the user, per item: **A** add it to the app too, **B** share the logic only (move it to the
+   project's shared pure-function module so both screens call one function; the app UI can come
+   later), **C** Telegram only (one-line reason), or **보류**. Recommend **B** whenever the same
+   decision exists, or would exist, in two places.
+4. Publish this as a short follow-up report in the same format (one card per item, the decision
+   buttons above instead of A/B/C variants, a simple app wireframe for A items) and save to
+   `backport/<itemId>` with fields `pick` (`"A"`/`"B"`/`"C"`/`"hold"`), `note`, `kind`, `savedAt`.
+5. Fold the answers into the plan: B items become a refactor task that lands before or with the
+   bot handlers; A items become separate app tasks or PRs.
+
+The same review runs at the end of `/telegram-port:update`, against what changed.
