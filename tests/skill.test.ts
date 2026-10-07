@@ -16,7 +16,7 @@ describe('SKILL.md', () => {
   });
 
   it('names every reference file it ships, and only those', () => {
-    const named = [...read('SKILL.md').matchAll(/`references\/([\w.-]+\.md)`/g)].map((m) => m[1]);
+    const named = [...read('SKILL.md').matchAll(/`references\/([\w.-]+\.(?:md|html))`/g)].map((m) => m[1]);
     expect(new Set(named)).toEqual(new Set(readdirSync(`${SKILL}/references`)));
   });
 
