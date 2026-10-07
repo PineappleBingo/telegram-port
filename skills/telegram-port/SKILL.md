@@ -116,4 +116,5 @@ templates in `templates/handlers.ts`, `templates/configAdapter.ts`, `templates/i
 - `references/manifest.md`: the manifest format and its rules
 - `references/wiring.md`: handlers, config adapter, messages, start line, re-run rules
 - `references/safety.md`: risk levels, secrets, what needs the user's yes
+- `references/report-template.html`: the one page every report is built from (replace only its `REPORT` data)
 - `references/report-format.md`: the decision report for choosing which dashboard features to port

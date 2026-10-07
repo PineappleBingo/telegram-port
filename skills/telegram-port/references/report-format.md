@@ -9,6 +9,19 @@ Use it in step 2, before writing the manifest, whenever the project has more tha
 user-facing features or a dashboard to compare against. The page holds no project code and no
 secrets. Write it in the manifest's language.
 
+## Build every report from the template
+
+Every report this skill publishes (decision report, backport review, `/telegram-port:update`
+diff report) is built from `references/report-template.html`: copy it, replace only the
+`const REPORT = {...}` data object, keep the CSS, components and save logic unchanged.
+
+- Show each option as a **preview card** (Telegram chat wireframe, app/browser wireframe, or a
+  shared-function diagram) in the side-by-side row. A text box describing the screen is not a
+  preview; never replace previews with prose or hardcoded lists.
+- Current state first ("지금 · 앱", "지금 · 텔레그램", or a dashed "없음" card), then A/B/C.
+- Version every report: header shows `vN · date` and links to the earlier versions; publish a new
+  version instead of overwriting the old one.
+
 ## Sections, in this order
 
 1. **How to use this report.** A five-step intro: read the flow, toggle the table, write ideas,

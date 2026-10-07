@@ -1,0 +1,369 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>결정 리포트 템플릿</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#eef2f5; --surface:#ffffff; --ink:#15202a; --muted:#56636f; --line:#d3dbe2;
+  --accent:#2678b6; --accent-ink:#ffffff; --chat:#dce6ee; --bubble:#ffffff; --btn:#e6f0f8; --tap:#e8a317;
+  --yes:#2b7449; --part:#93640c; --no:#a63a3a;
+  --display:"Gothic A1","IBM Plex Sans KR",sans-serif; --body:"IBM Plex Sans KR",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --r:12px; --tapmin:44px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0f1418; --surface:#182027; --ink:#e4eaef; --muted:#9aa6b1; --line:#2b353e;
+  --accent:#6db3e8; --accent-ink:#0b1720; --chat:#0c161d; --bubble:#1f2a33; --btn:#1a3247; --tap:#d39a2a;
+  --yes:#7fd0a0; --part:#e3b55c; --no:#ec8a8a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1418; --surface:#182027; --ink:#e4eaef; --muted:#9aa6b1; --line:#2b353e;
+  --accent:#6db3e8; --accent-ink:#0b1720; --chat:#0c161d; --bubble:#1f2a33; --btn:#1a3247; --tap:#d39a2a;
+  --yes:#7fd0a0; --part:#e3b55c; --no:#ec8a8a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;padding-inline:16px;overflow-x:hidden}
+main{max-width:1080px;margin:0 auto;padding-block:28px 140px;display:grid;gap:36px;min-width:0}
+main > *{min-width:0}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.3}
+h1{font-size:clamp(1.6rem,6vw,2.2rem);font-weight:800} h2{font-size:1.3rem} h3{font-size:1.05rem}
+p{margin:0}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.85em;overflow-wrap:anywhere}
+.meta{font-family:var(--mono);font-size:.78rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}
+.note{font-size:.9rem;color:var(--muted)}
+.todo{font-size:.92rem;border-left:3px solid var(--accent);padding:2px 0 2px 10px;color:var(--muted)}
+.todo b{color:var(--ink)}
+section{display:grid;gap:12px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.yes{color:var(--yes)} .part{color:var(--part)} .no{color:var(--no)}
+button,summary,.lnk{min-height:var(--tapmin)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+textarea{width:100%;min-height:64px;font:inherit;font-size:.95rem;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px}
+
+/* intro */
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);font-family:var(--mono);font-weight:600;background:var(--accent);color:var(--accent-ink);border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-size:.85rem}
+.warn{border-left:3px solid var(--no);display:grid;gap:8px}
+.ev{font-family:var(--mono);font-size:.8rem;overflow-wrap:anywhere;color:var(--muted);margin:0;padding-left:1.1em}
+
+/* stepper */
+.stepper{list-style:none;margin:0;padding:0;display:grid}
+.stepper > li{position:relative;padding-left:34px}
+.stepper > li::before{content:"";position:absolute;left:13px;top:0;bottom:0;width:2px;background:var(--line)}
+.stepper > li:first-child::before{top:22px} .stepper > li:last-child::before{bottom:calc(100% - 22px)}
+.stepper .dot{position:absolute;left:5px;top:14px;width:18px;height:18px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);font-family:var(--mono);font-size:.65rem;display:grid;place-items:center;color:var(--accent);font-weight:600}
+.stepper details{margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.stepper summary{list-style:none;display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;font-weight:600;flex-wrap:wrap}
+.stepper summary::-webkit-details-marker{display:none}
+.stepper summary::after{content:"＋";margin-left:auto;color:var(--muted)}
+.stepper details[open] summary::after{content:"－"}
+.stepper .mini{font-family:var(--mono);font-size:.75rem;font-weight:400;color:var(--muted)}
+.stepper .body{padding:0 14px 14px;display:grid;gap:8px;font-size:.92rem}
+.sup{display:grid;grid-template-columns:5.5em 1fr;gap:2px 10px}
+.sup b{font-weight:600}
+.lnk{display:inline-flex;align-items:center;font-weight:600}
+
+/* features */
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0}
+.feat > summary{list-style:none;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:12px 16px;cursor:pointer}
+.feat > summary::-webkit-details-marker{display:none}
+.feat > summary::after{content:"＋";margin-left:auto;color:var(--muted)}
+.feat[open] > summary::after{content:"－"}
+.feat .fb{padding:0 16px 16px;display:grid;gap:14px;min-width:0}
+.chip{display:inline-flex;gap:6px;align-items:center;font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--btn)}
+.flag{font-family:var(--mono);font-size:.74rem;border:1px solid currentColor;border-radius:6px;padding:0 6px}
+.chosen{font-family:var(--mono);font-size:.78rem;color:var(--accent)}
+.rec{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--yes);border:1px solid currentColor;border-radius:6px;padding:0 6px;justify-self:start}
+.vrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,82%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;overscroll-behavior-x:contain}
+@media (min-width:900px){.vrow{grid-auto-columns:minmax(230px,1fr)}}
+.var{scroll-snap-align:start;border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:8px;align-content:start;background:var(--paper);min-width:0}
+.var.now{border-style:dashed}
+.var.sel{border:2px solid var(--accent)}
+.var h4{margin:0;font-family:var(--display);font-size:.95rem}
+.var .idea{font-size:.88rem}
+.var .pick{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:10px;font-weight:600}
+.var.sel .pick{background:var(--accent);color:var(--accent-ink)}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:0 14px;font-size:.85rem}
+.dots button.sel{border-color:var(--accent);color:var(--accent);font-weight:600}
+.down{text-align:center;color:var(--muted);font-size:1rem;line-height:1}
+.cap{font-size:.78rem;color:var(--muted)}
+/* chat wireframe */
+.chat{background:var(--chat);border-radius:14px;padding:8px;display:grid;gap:6px}
+.bub{background:var(--bubble);border-radius:12px 12px 12px 4px;padding:7px 9px;font-size:.8rem;white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere}
+.bub.me{border-radius:12px 12px 4px 12px;justify-self:end;max-width:88%}
+.kb{display:grid;gap:4px}
+.kb .r{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px}
+.kb span,.wb span{background:var(--btn);color:var(--accent);text-align:center;font-size:.74rem;padding:6px 3px;border-radius:8px;font-weight:600}
+.tap{outline:2px solid var(--tap);outline-offset:1px}
+.tap::after{content:" 👆"}
+/* browser wireframe */
+.br{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);font-size:.74rem;line-height:1.45}
+.bh{display:flex;gap:4px;align-items:center;padding:4px 8px;background:var(--btn);border-bottom:1px solid var(--line)}
+.bh i{width:7px;height:7px;border-radius:50%;background:var(--line);display:block}
+.bh span{margin-left:6px;font-family:var(--mono);font-size:.68rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bb{display:grid;grid-template-columns:50px 1fr;min-height:120px}
+.side{background:var(--paper);border-right:1px solid var(--line);padding:4px;display:grid;gap:2px;align-content:start;font-size:.64rem;color:var(--muted)}
+.side .on{color:var(--accent);font-weight:600}
+.ct{padding:6px;display:grid;gap:5px;align-content:start;min-width:0}
+.wh{font-weight:700;font-size:.8rem}
+.wl{font-size:.64rem;color:var(--muted)}
+.wi{border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--paper);overflow-wrap:anywhere}
+.wi.area{min-height:40px}
+.wb{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.wb span{padding:4px 8px}
+.wr{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:3px}
+.wr span{border:1px solid var(--line);border-radius:5px;padding:2px 4px;text-align:center;overflow-wrap:anywhere;background:var(--paper)}
+.wt{background:var(--ink);color:var(--paper);border-radius:6px;padding:4px 8px}
+.none{border:2px dashed var(--line);border-radius:10px;min-height:120px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:12px;font-size:.85rem}
+/* shared-function diagram */
+.sh{display:grid;gap:4px;font-size:.74rem;text-align:center}
+.sh .src{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sh .src div{border:1px solid var(--line);border-radius:8px;padding:6px 4px;background:var(--surface);overflow-wrap:anywhere}
+.sh .arw{color:var(--muted);font-size:.9rem;line-height:1}
+.sh .fn{border:2px solid var(--accent);border-radius:8px;padding:6px;background:var(--surface);display:grid;gap:2px}
+.sh .fn b{font-family:var(--mono);color:var(--accent);overflow-wrap:anywhere}
+.sh .fn small{font-family:var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.sh .same{color:var(--muted)}
+.tl{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:.84rem}
+/* options & decision */
+.opts{display:grid;gap:10px;border-top:1px dashed var(--line);padding-top:12px}
+.opt{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:.92rem}
+.opt > b{width:100%;font-weight:600}
+.opt label{display:inline-flex;gap:6px;align-items:center;cursor:pointer;min-height:var(--tapmin);padding:0 12px;border:1px solid var(--line);border-radius:10px}
+.opt label:has(input:checked){border-color:var(--accent)}
+.pickrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pickbtn{border:1px solid var(--line);background:transparent;color:var(--ink);padding:0 18px;border-radius:999px}
+.pickbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.evd summary{cursor:pointer;font-weight:600;font-size:.9rem;display:flex;align-items:center}
+.evd[open] summary{margin-bottom:6px}
+.panel ul,ol.plain{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.bar #count{font-family:var(--mono);font-size:.85rem;font-weight:600}
+.bar button{font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:0 20px}
+.bar button:disabled{opacity:.5;cursor:default}
+#status{font-size:.82rem;color:var(--muted);flex-basis:100%;text-align:center}
+#status:empty{display:none}
+</style></head><body>
+<main>
+<header style="display:grid;gap:8px"><p class="meta" id="meta"></p><h1 id="title"></h1></header>
+<section class="card" aria-labelledby="introh"><h2 id="introh">이 리포트 사용법</h2><div id="intro" style="display:grid;gap:12px"></div></section>
+<section id="warnsec" aria-labelledby="warnh" hidden><h2 id="warnh">먼저 확인할 것</h2><p class="todo"><b>이 단계에서 할 일:</b> 규칙 위반 소지를 먼저 읽습니다.</p><div id="warns" style="display:grid;gap:10px"></div></section>
+<section aria-labelledby="flowh"><h2 id="flowh"></h2><p class="todo" id="flowtodo"></p><ol class="stepper" id="stepper"></ol></section>
+<section id="feats" aria-labelledby="featsh"><h2 id="featsh">항목별 결정</h2>
+  <p class="todo"><b>이 단계에서 할 일:</b> 항목을 열어 지금 화면과 A·B·C 시안을 나란히 비교하고 "이 안 선택" 또는 보류를 누르세요. 휴대폰에서는 시안 줄만 옆으로 넘어갑니다.</p></section>
+<section class="card panel" aria-labelledby="sumh"><h2 id="sumh">선택 요약</h2><p class="todo"><b>이 단계에서 할 일:</b> 고른 결과와 작업량을 확인하세요.</p><div id="summary"></div>
+  <label for="idea" style="font-weight:600">새 아이디어</label><textarea id="idea" placeholder="이 리포트에 없는 아이디어"></textarea></section>
+<section aria-labelledby="nexth"><h2 id="nexth">선택 후 진행 방식</h2><ol class="plain" id="next"></ol></section>
+</main>
+<div class="bar"><span id="count">0 / 0 결정</span><button id="save" type="button">선택 저장</button><span id="status" role="status" aria-live="polite"></span></div>
+<script>
+/*REPORT-START*/
+/* ───────── REPORT 데이터 스키마 ─────────
+ * meta:   { line:[문자열...], version:"vN · 날짜 수정", prev:[{label,url}] , title }
+ * intro:  { lead:문자열, steps:[문자열...], notes:[문자열...] }      ← 텍스트만 (HTML 아님)
+ * warnings: [{ title, text, ev:[파일:줄...] }]                       ← 빨간 콜아웃, 없으면 []
+ * stepper: { title, todo, items:[{ name, mark:"y|p|n", markText, rows:[[라벨, "y|p|n", 설명]], links:[featureId...] }] }
+ * app:    { nav:[사이드바 항목...] }                                  ← 브라우저 와이어프레임 공용 사이드바
+ * picks:  { A:"라벨", B:"라벨", C:"라벨" } , alt:[[값,"라벨"]]          ← 카드 선택값 + 카드 밖 버튼(보류 등)
+ * db:     { collection:"picks", ideas:"ideas/main" }
+ * next:   [문자열...]
+ * features: [{
+ *   id, title, kind:{sym,label}, dash:"y|p|n", rec:"A|B|C", eff:"S|M|L|-", why, warn?:문자열,
+ *   evidence:[파일:줄...], options?:[{id,label,choices:[...]}],
+ *   cards:[{ label, idea, pick?:"A|B|C" (없으면 '지금' 카드 = 선택 불가), screens:[Screen...] }]
+ * }]
+ * Screen (cap = 위 작은 설명, 여러 개면 ↓ 로 이어짐):
+ *   {type:"chat", cap, bubbles:[{t, me?}], kb:[[버튼...]], tap:"누른 버튼"}
+ *   {type:"browser", cap, url, nav:"켜진 사이드바", blocks:[Block...]}
+ *      Block: {h} 제목 · {p} 문장 · {field,v} 입력칸 · {area,v} 여러 줄 · {btns:[...],tap?} · {row:[...]} 칸 · {toast}
+ *   {type:"shared", cap, from:[화면1, 화면2], fn:"함수()", file:"경로", same:"UI는 그대로"}
+ *   {type:"none", cap, t:"없음 설명"}
+ *   {type:"text", cap, lines:[...]}
+ */
+const REPORT = {
+  meta:{ line:["예시 프로젝트","대시보드 ↔ 봇"], version:"v1 · 2026-10-07", prev:[], title:"예시 결정 리포트" },
+  intro:{ lead:"항목마다 지금 화면과 시안을 나란히 보고 하나를 고릅니다.", steps:["흐름을 훑습니다.","항목을 열어 시안을 비교합니다.","이 안 선택 또는 보류를 누릅니다.","선택 저장을 누릅니다."], notes:["표기: ● 있음 · ◐ 일부 · ○ 없음"] },
+  warnings:[],
+  stepper:{ title:"흐름", todo:"단계를 눌러 관련 항목으로 이동하세요.", items:[
+    { name:"캡션 수정", mark:"p", markText:"대시보드 ◐ 일부", rows:[["대시보드","p","저장만"],["봇","y","게이트 후 저장"]], links:["demo"] } ] },
+  app:{ nav:["홈","카드","설정"] },
+  picks:{ A:"A 대시보드에도 추가", B:"B 로직만 공유", C:"C 봇 전용" }, alt:[["later","보류"]],
+  db:{ collection:"picks", ideas:"ideas/main" },
+  next:["저장 → Claude 가 저장값을 읽고 계획을 씁니다."],
+  features:[{
+    id:"demo", title:"✏️ 캡션 수정", kind:{sym:"⚖",label:"새 규칙·판정"}, dash:"p", rec:"B", eff:"S",
+    why:"같은 글이 화면마다 다르게 저장됩니다.", evidence:["src/app/x.ts:10"],
+    options:[{id:"learn",label:"톤 학습",choices:["직접 쓴 것만","안 함"]}],
+    cards:[
+      { label:"지금 · 대시보드", idea:"캡션 저장만.", screens:[{type:"browser",url:"/cards/1",nav:"카드",blocks:[{h:"카드 상세"},{area:"캡션",v:"예시 캡션"},{btns:["저장"],tap:"저장"}]}] },
+      { label:"지금 · 봇", idea:"답장으로 고침.", screens:[{type:"chat",bubbles:[{me:true,t:"고친 캡션"},{t:"✅ 저장"}],kb:[["↩ 되돌리기"]],tap:""}] },
+      { label:"A 대시보드에도 추가", pick:"A", idea:"검사 결과를 저장 옆에.", screens:[{type:"browser",url:"/cards/1",nav:"카드",blocks:[{area:"캡션",v:"예시"},{p:"✓ 문장 검사 통과"},{btns:["저장"]}]}] },
+      { label:"B 로직만 공유", pick:"B", idea:"두 화면이 한 함수를 부름.", screens:[{type:"shared",from:["대시보드 저장","봇 답장"],fn:"gate()",file:"src/lib/gate.ts",same:"UI는 그대로"}] },
+      { label:"C 봇 전용", pick:"C", idea:"그대로 둠.", screens:[{type:"text",lines:["봇: 그대로","대시보드: 그대로"]}] }
+    ] }]
+};
+/*REPORT-END*/
+
+const MARK = { y:["yes","● 있음"], p:["part","◐ 일부"], n:["no","○ 없음"] };
+const EFFN = { S:1, M:3, L:8, "-":0 };
+function el(tag, attrs={}, kids=[]){ const e=document.createElement(tag); for(const [k,v] of Object.entries(attrs)){ if(k==="text") e.textContent=v; else if(k.startsWith("on")) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v);} for(const c of [].concat(kids)) if(c!=null&&c!==false) e.append(c); return e; }
+const FEATS = REPORT.features;
+
+// header + intro + warnings + stepper + next (static)
+(function shell(){
+  const m=document.getElementById("meta");
+  for(const s of REPORT.meta.line) m.append(el("span",{text:s}));
+  m.append(el("b",{text:REPORT.meta.version}));
+  for(const p of REPORT.meta.prev) m.append(el("a",{href:p.url,text:p.label}));
+  document.getElementById("title").textContent=REPORT.meta.title;
+  const it=document.getElementById("intro");
+  it.append(el("p",{text:REPORT.intro.lead}), el("ol",{class:"steps"},REPORT.intro.steps.map(s=>el("li",{},[el("span",{text:s})]))));
+  for(const n of REPORT.intro.notes) it.append(el("p",{class:"note",text:n}));
+  if(REPORT.warnings.length){
+    document.getElementById("warnsec").hidden=false;
+    for(const w of REPORT.warnings) document.getElementById("warns").append(el("div",{class:"card warn"},[el("p",{},[el("b",{text:"⚠ "+w.title+" "}),w.text]), el("ul",{class:"ev"},w.ev.map(x=>el("li",{text:x})))]));
+  }
+  document.getElementById("flowh").textContent=REPORT.stepper.title;
+  document.getElementById("flowtodo").replaceChildren(el("b",{text:"이 단계에서 할 일: "}),REPORT.stepper.todo);
+  const ol=document.getElementById("stepper");
+  REPORT.stepper.items.forEach((s,i)=>{
+    const body=el("div",{class:"body"},s.rows.map(([l,mk,t])=>el("div",{class:"sup"},[el("b",{text:l}),el("span",{},[el("span",{class:MARK[mk][0],text:MARK[mk][1]})," · "+t])])));
+    for(const id of s.links){ const f=FEATS.find(x=>x.id===id); if(f) body.append(el("a",{class:"lnk",href:"#f-"+id,text:f.title+" ↓",onclick:(e)=>{e.preventDefault(); goFeature(id);}})); }
+    ol.append(el("li",{},[el("span",{class:"dot","aria-hidden":"true",text:String(i+1)}), el("details",{},[el("summary",{},[s.name, el("span",{class:"mini "+MARK[s.mark][0],text:s.markText})]), body])]));
+  });
+  document.getElementById("next").append(...REPORT.next.map(t=>el("li",{text:t})));
+})();
+function goFeature(id){ const d=document.getElementById("f-"+id); if(!d) return; d.open=true; OPEN.add(id); d.scrollIntoView({block:"start"}); d.querySelector("summary")?.focus({preventScroll:true}); }
+
+// wireframes
+function wfChat(s){
+  const c=el("div",{class:"chat"});
+  for(const b of s.bubbles) c.append(el("div",{class:"bub"+(b.me?" me":""),text:b.t}));
+  if(s.kb?.length) c.append(el("div",{class:"kb"},s.kb.map(row=>el("div",{class:"r"},row.map(l=>el("span",{class:l===s.tap?"tap":"",text:l}))))));
+  return c;
+}
+function wfBlock(b){
+  if(b.h!==undefined) return el("div",{class:"wh",text:b.h});
+  if(b.p!==undefined) return el("div",{text:b.p});
+  if(b.field!==undefined) return el("div",{},[el("div",{class:"wl",text:b.field}),el("div",{class:"wi",text:b.v||""})]);
+  if(b.area!==undefined) return el("div",{},[el("div",{class:"wl",text:b.area}),el("div",{class:"wi area",text:b.v||""})]);
+  if(b.btns) return el("div",{class:"wb"},b.btns.map(l=>el("span",{class:l===b.tap?"tap":"",text:l})));
+  if(b.row) return el("div",{class:"wr"},b.row.map(l=>el("span",{text:l})));
+  if(b.toast!==undefined) return el("div",{class:"wt",text:b.toast});
+  return null;
+}
+function wfBrowser(s){
+  return el("div",{class:"br","aria-label":"대시보드 화면 와이어프레임"},[
+    el("div",{class:"bh","aria-hidden":"true"},[el("i"),el("i"),el("i"),el("span",{text:s.url})]),
+    el("div",{class:"bb"},[el("div",{class:"side","aria-hidden":"true"},REPORT.app.nav.map(n=>el("span",{class:n===s.nav?"on":"",text:n}))), el("div",{class:"ct"},s.blocks.map(wfBlock))])]);
+}
+function wfShared(s){
+  return el("div",{class:"sh","aria-label":"공용 함수 구조도"},[
+    el("div",{class:"src"},s.from.map(t=>el("div",{text:t}))),
+    el("div",{class:"arw","aria-hidden":"true",text:"↘  ↙"}),
+    el("div",{class:"fn"},[el("b",{text:s.fn}),el("small",{text:s.file})]),
+    el("div",{class:"same",text:"✓ "+(s.same||"UI는 그대로")})]);
+}
+function screen(s){
+  const body = s.type==="chat"?wfChat(s) : s.type==="browser"?wfBrowser(s) : s.type==="shared"?wfShared(s)
+    : s.type==="none"?el("div",{class:"none",text:"○ "+s.t}) : el("ul",{class:"tl"},(s.lines||[]).map(t=>el("li",{text:t})));
+  return el("div",{style:"display:grid;gap:4px;min-width:0"},[s.cap?el("div",{class:"cap",text:s.cap}):null, body]);
+}
+function screens(list){ const f=el("div",{style:"display:grid;gap:6px;min-width:0"}); list.forEach((s,i)=>{ if(i) f.append(el("div",{class:"down","aria-hidden":"true",text:"↓"})); f.append(screen(s)); }); return f; }
+
+// features
+const PICKS = {}; let IDEA="";
+const OPEN = new Set([FEATS[0]?.id]);
+const ALT = Object.fromEntries(REPORT.alt);
+const label = p => REPORT.picks[p] || ALT[p] || "";
+function setPick(id,val){ PICKS[id].pick=val; render(); refresh(); }
+function render(){
+  const root=document.getElementById("feats");
+  root.querySelectorAll(".feat").forEach(n=>n.remove());
+  for(const F of FEATS){
+    const st = PICKS[F.id] ||= { pick:"", note:"", opts:{} };
+    const box=el("details",{class:"feat",id:"f-"+F.id}); if(OPEN.has(F.id)) box.open=true;
+    box.addEventListener("toggle",()=>{ box.open?OPEN.add(F.id):OPEN.delete(F.id); });
+    const head=el("summary",{},[el("span",{class:"chip",text:F.kind.sym+" "+F.kind.label}), el("h3",{text:F.title}), el("span",{class:"flag "+MARK[F.dash][0],text:"대시보드 "+MARK[F.dash][1]})]);
+    if(F.warn) head.append(el("span",{class:"flag no",text:"⚠ 하드 룰"}));
+    if(st.pick) head.append(el("span",{class:"chosen",text:"✔ "+label(st.pick)}));
+    box.append(head);
+    const fb=el("div",{class:"fb"});
+    if(F.warn) fb.append(el("div",{class:"card warn"},[el("p",{},[el("b",{text:"⚠ "}),F.warn])]));
+    fb.append(el("p",{},[el("b",{text:"왜 중요한가: "}),F.why]));
+    const row=el("div",{class:"vrow",role:"group","aria-label":"시안 비교 (옆으로 넘기기)"});
+    const dots=el("div",{class:"dots","aria-label":"시안으로 이동"});
+    F.cards.forEach((c,i)=>{
+      const sel=c.pick&&st.pick===c.pick;
+      const card=el("div",{class:"var"+(c.pick?"":" now")+(sel?" sel":""),id:`v-${F.id}-${i}`},[el("h4",{text:c.label})]);
+      if(c.pick && c.pick===F.rec) card.append(el("span",{class:"rec",text:"★ 추천"}));
+      card.append(el("p",{class:"idea",text:c.idea}), screens(c.screens));
+      if(c.pick) card.append(el("button",{type:"button",class:"pick","aria-pressed":String(!!sel),text:sel?"✔ 선택됨":"이 안 선택",onclick:()=>setPick(F.id,c.pick)}));
+      row.append(card);
+      dots.append(el("button",{type:"button",class:sel?"sel":"",text:c.pick||"지금"+(i+1),"aria-label":c.label+"로 이동",onclick:()=>card.scrollIntoView({block:"nearest",inline:"start"})}));
+    });
+    fb.append(dots,row);
+    if(F.options?.length){
+      const opts=el("div",{class:"opts"},[el("p",{class:"note",text:"옵션"})]);
+      for(const o of F.options){
+        const r=el("div",{class:"opt"},[el("b",{text:o.label})]);
+        if(st.opts[o.id]===undefined) st.opts[o.id]=o.choices[0];
+        o.choices.forEach((c,i)=>{ const id=`${F.id}-${o.id}-${i}`; const inp=el("input",{type:"radio",name:`${F.id}-${o.id}`,id,value:c}); if(st.opts[o.id]===c) inp.checked=true; inp.addEventListener("change",()=>{st.opts[o.id]=c;}); r.append(el("label",{for:id},[inp,document.createTextNode(c)])); });
+        opts.append(r);
+      }
+      fb.append(opts);
+    }
+    const pr=el("div",{class:"pickrow"},[el("span",{class:"note",text:"A·B·C가 아니면:"})]);
+    for(const [v,l] of REPORT.alt) pr.append(el("button",{class:"pickbtn",type:"button","aria-pressed":String(st.pick===v),text:l,onclick:()=>setPick(F.id,v)}));
+    const note=el("textarea",{placeholder:"메모 (선택)","aria-label":F.title+" 메모"}); note.value=st.note; note.addEventListener("input",()=>{st.note=note.value;});
+    fb.append(pr,note, el("details",{class:"evd"},[el("summary",{text:"근거 (파일:줄)"}), el("ul",{class:"ev"},F.evidence.map(x=>el("li",{text:x})))]));
+    box.append(fb); root.append(box);
+    const si=F.cards.findIndex(c=>c.pick&&c.pick===st.pick);
+    if(si>=0) requestAnimationFrame(()=>{ const c=document.getElementById(`v-${F.id}-${si}`); if(c) row.scrollLeft=c.offsetLeft-row.offsetLeft; });
+  }
+}
+function refresh(){
+  const decided=FEATS.filter(f=>PICKS[f.id]?.pick);
+  document.getElementById("count").textContent=`${decided.length} / ${FEATS.length} 결정`;
+  const keys=[...Object.keys(REPORT.picks),...REPORT.alt.map(a=>a[0])];
+  const cnt=Object.fromEntries(keys.map(k=>[k,0])); let eff=0;
+  for(const f of decided){ const p=PICKS[f.id].pick; cnt[p]++; if(p==="A") eff+=EFFN[f.eff]??0; if(p==="B") eff+=1; }
+  const ul=el("ul",{},decided.map(f=>el("li",{text:`${f.title} — ${label(PICKS[f.id].pick)}${PICKS[f.id].pick===f.rec?" (추천과 같음)":""}`})));
+  document.getElementById("summary").replaceChildren(
+    el("p",{text:keys.map(k=>`${label(k)} ${cnt[k]}`).join(" · ")}),
+    el("p",{class:"note",text:`예상 작업량 ≈ ${eff} 단위 (A: S=1·M=3·L=8, B 는 항목당 1)`}),
+    decided.length?ul:el("p",{class:"note",text:"아직 고른 항목이 없어요."}));
+}
+render(); refresh();
+const ideaEl=document.getElementById("idea"); ideaEl.addEventListener("input",()=>{IDEA=ideaEl.value;});
+
+// db: load on open, save on click
+const statusEl=document.getElementById("status"), saveBtn=document.getElementById("save");
+let dbRef=null;
+(async()=>{
+  let db=null; try{ db = await window.claude?.use?.("db").catch(()=>null) ?? null; }catch{ db=null; }
+  if(!db){ statusEl.textContent="저장 기능을 쓸 수 없는 보기예요 — 선택을 채팅으로 알려 주세요."; saveBtn.disabled=true; return; }
+  dbRef=db;
+  try{
+    const [p,i]=await Promise.all([db.collection(REPORT.db.collection).get(), db.collection(REPORT.db.ideas.split("/")[0]).get()]);
+    for(const d of p.docs){ const v=d.data(); if(v && FEATS.some(f=>f.id===d.id)) PICKS[d.id]={pick:v.pick||"",note:v.note||"",opts:v.opts||{}}; }
+    for(const d of i.docs){ if(d.id===REPORT.db.ideas.split("/")[1]){ IDEA=d.data()?.text||""; ideaEl.value=IDEA; } }
+    render(); refresh();
+    if(p.docs.length) statusEl.textContent="저장된 선택을 불러왔어요";
+  }catch{ statusEl.textContent="이전 저장값을 읽지 못했어요."; }
+})();
+saveBtn.addEventListener("click",async()=>{
+  if(!dbRef) return;
+  saveBtn.disabled=true; statusEl.textContent="저장 중…";
+  const at=new Date().toISOString();
+  try{
+    for(const F of FEATS){ const st=PICKS[F.id]; if(!st||(!st.pick&&!st.note)) continue;
+      const doc={pick:st.pick,note:st.note,kind:F.kind.sym+" "+F.kind.label,savedAt:at}; if(F.options?.length) doc.opts=st.opts;
+      await dbRef.doc(REPORT.db.collection+"/"+F.id).set(doc); }
+    await dbRef.doc(REPORT.db.ideas).set({text:IDEA,savedAt:at});
+    statusEl.textContent="저장했어요 · "+at.slice(11,16)+" — Claude에게 \"선택 저장했어\"라고 알려 주세요";
+  }catch(e){ statusEl.textContent="저장하지 못했어요 ("+((e&&(e.code||e.message))||"error")+") — 다시 시도하거나 채팅으로 알려 주세요"; }
+  saveBtn.disabled=false;
+});
+</script></body></html>
